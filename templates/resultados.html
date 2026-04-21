@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resultados - AroundMe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resultados.css') }}">
+</head>
+<body class="results-page">
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="{{ url_for('main.index') }}">
+                <span class="brand-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 15.13 12 22 12 22C12 22 19.5 15.13 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.5C10.34 12.5 9 11.16 9 9.5C9 7.84 10.34 6.5 12 6.5C13.66 6.5 15 7.84 15 9.5C15 11.16 13.66 12.5 12 12.5Z"/>
+                    </svg>
+                </span>
+                <span class="brand-text">Around<span>Me</span></span>
+            </a>
+
+            <nav class="main-nav" aria-label="Principal">
+                <a class="nav-link" href="{{ url_for('main.index') }}">Inicio</a>
+                <a class="nav-link nav-link-active" href="{{ url_for('main.historico') }}">Historico</a>
+                <a class="nav-link" href="{{ url_for('main.index') }}">Nova pesquisa</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="results-main">
+        <div class="container">
+            <section class="results-hero">
+                <div class="results-hero-copy">
+                    <p class="results-eyebrow">Resultados encontrados</p>
+                    <h1>Locais perto da morada pesquisada</h1>
+                    <p class="results-summary">
+                        Encontramos {{ locais|length }} resultado{% if locais|length != 1 %}s{% endif %} para a categoria
+                        <strong>{{ pesquisa.categoria }}</strong>.
+                    </p>
+                </div>
+
+                <div class="results-actions">
+                    <a class="results-link" href="{{ url_for('main.index') }}">Nova pesquisa</a>
+                    <a class="results-link results-link-secondary" href="{{ url_for('main.historico') }}">Ver historico</a>
+                </div>
+            </section>
+
+            <section class="results-info-grid" aria-label="Resumo da pesquisa">
+                <article class="results-info-card">
+                    <span class="results-info-label">Morada</span>
+                    <strong>{{ referencia }}</strong>
+                </article>
+                <article class="results-info-card">
+                    <span class="results-info-label">Categoria</span>
+                    <strong>{{ pesquisa.categoria }}</strong>
+                </article>
+                <article class="results-info-card">
+                    <span class="results-info-label">Modo</span>
+                    <strong>{{ pesquisa.modo_deslocacao }}</strong>
+                </article>
+            </section>
+
+            <section class="results-layout">
+                <div class="results-column">
+                    <div class="results-panel">
+                        <div class="results-panel-header">
+                            <h2>Lista de resultados</h2>
+                            <span>{{ locais|length }} local{% if locais|length != 1 %}ais{% endif %}</span>
+                        </div>
+
+                        {% if locais %}
+                            <div class="results-list">
+                                {% for local in locais %}
+                                    <article class="result-card">
+                                        <div class="result-card-top">
+                                            <span class="result-order">{{ loop.index }}</span>
+                                            <div>
+                                                <h3>{{ local.nome }}</h3>
+                                                <p>{{ local.morada }}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="result-metrics">
+                                            {% if local.distancia_m is not none %}
+                                                <span>Distancia aproximada: {{ "%.2f"|format(local.distancia_m / 1000) }} km</span>
+                                            {% endif %}
+
+                                            {% if local.distancia_rota_km is not none %}
+                                                <span>Distancia por rota: {{ "%.2f"|format(local.distancia_rota_km) }} km</span>
+                                                <span>Tempo estimado: {{ "%.0f"|format(local.tempo_min) }} min</span>
+                                            {% else %}
+                                                <span>Rota nao calculada.</span>
+                                            {% endif %}
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="results-empty">Sem resultados para mostrar.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <aside class="map-column">
+                    <div class="results-panel map-panel">
+                        <div class="results-panel-header">
+                            <h2>Mapa</h2>
+                            <span>Morada + resultados</span>
+                        </div>
+
+                        <div class="folium-map-shell">
+                            {{ map_html|safe }}
+                        </div>
+                    </div>
+                </aside>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="brand-icon brand-icon-small">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 15.13 12 22 12 22C12 22 19.5 15.13 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.5C10.34 12.5 9 11.16 9 9.5C9 7.84 10.34 6.5 12 6.5C13.66 6.5 15 7.84 15 9.5C15 11.16 13.66 12.5 12 12.5Z"/>
+                    </svg>
+                </span>
+                <div>
+                    <strong>Around<span>Me</span></strong>
+                    <p>Encontre o que precisa, perto de si.</p>
+                </div>
+            </div>
+
+            <p class="footer-copy">© 2026 AroundMe. Todos os direitos reservados.</p>
+
+            <div class="footer-status">
+                <span class="footer-status-dot"></span>
+                <span>Resultados prontos a consultar</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

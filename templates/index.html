@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AroundMe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body class="landing-page">
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="{{ url_for('main.index') }}">
+                <span class="brand-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 15.13 12 22 12 22C12 22 19.5 15.13 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.5C10.34 12.5 9 11.16 9 9.5C9 7.84 10.34 6.5 12 6.5C13.66 6.5 15 7.84 15 9.5C15 11.16 13.66 12.5 12 12.5Z"/>
+                    </svg>
+                </span>
+                <span class="brand-text">Around<span>Me</span></span>
+            </a>
+
+            <nav class="main-nav" aria-label="Principal">
+                <a class="nav-link nav-link-active" href="{{ url_for('main.index') }}">Inicio</a>
+                <a class="nav-link" href="{{ url_for('main.historico') }}">Historico de Pesquisas</a>
+                <a class="nav-link" href="#como-funciona">Sobre</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container hero-content">
+                <div class="hero-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 15.13 12 22 12 22C12 22 19.5 15.13 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.5C10.34 12.5 9 11.16 9 9.5C9 7.84 10.34 6.5 12 6.5C13.66 6.5 15 7.84 15 9.5C15 11.16 13.66 12.5 12 12.5Z"/>
+                    </svg>
+                </div>
+
+                <div class="hero-copy">
+                    <h1>Encontre o que precisa, perto de si</h1>
+                    <p>Pesquise supermercados, farmacias, escolas e muito mais proximos de qualquer morada.</p>
+                </div>
+
+                <section class="search-card" aria-labelledby="nova-pesquisa-titulo">
+                    <div class="search-card-header">
+                        <span class="section-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M10 3C6.13 3 3 6.13 3 10C3 13.87 6.13 17 10 17C11.57 17 13.03 16.5 14.22 15.65L18.29 19.71L19.71 18.29L15.65 14.22C16.5 13.03 17 11.57 17 10C17 6.13 13.87 3 10 3ZM10 5C12.76 5 15 7.24 15 10C15 12.76 12.76 15 10 15C7.24 15 5 12.76 5 10C5 7.24 7.24 5 10 5Z"/>
+                            </svg>
+                        </span>
+                        <h2 id="nova-pesquisa-titulo">Nova Pesquisa</h2>
+                    </div>
+
+                    {% if erro %}
+                        <div class="form-alert" role="alert">
+                            <strong>Erro:</strong> {{ erro }}
+                        </div>
+                    {% endif %}
+
+                    <form class="search-form" method="post" action="{{ url_for('main.resultados') }}">
+                        <div class="form-grid">
+                            <div class="field-group field-group-wide">
+                                <label for="morada">Morada</label>
+                                <div class="input-shell">
+                                    <span class="input-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 15.13 12 22 12 22C12 22 19.5 15.13 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.5C10.34 12.5 9 11.16 9 9.5C9 7.84 10.34 6.5 12 6.5C13.66 6.5 15 7.84 15 9.5C15 11.16 13.66 12.5 12 12.5Z"/>
+                                        </svg>
+                                    </span>
+                                    <input
+                                        id="morada"
+                                        name="morada"
+                                        type="text"
+                                        placeholder="Ex: Rua da Constituicao, Porto"
+                                        value="{{ (valores.morada if valores else '') or '' }}"
+                                        required
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="categoria">Categoria</label>
+                                <div class="input-shell input-shell-select">
+                                    <select id="categoria" name="categoria" required>
+                                        <option value="" disabled {% if not valores or not valores.categoria %}selected{% endif %}>Selecione uma categoria</option>
+                                        <option value="farmacia" {% if valores and valores.categoria == "farmacia" %}selected{% endif %}>Farmacia</option>
+                                        <option value="hospital" {% if valores and valores.categoria == "hospital" %}selected{% endif %}>Hospital</option>
+                                        <option value="escola" {% if valores and valores.categoria == "escola" %}selected{% endif %}>Escola</option>
+                                        <option value="supermercado" {% if valores and valores.categoria == "supermercado" %}selected{% endif %}>Supermercado</option>
+                                    </select>
+                                    <span class="select-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M7 10L12 15L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="modo_deslocacao">Modo de deslocacao</label>
+                                <div class="input-shell input-shell-select">
+                                    <select id="modo_deslocacao" name="modo_deslocacao" required>
+                                        <option value="" disabled {% if not valores or not valores.modo_deslocacao %}selected{% endif %}>Selecione um modo</option>
+                                        <option value="a pe" {% if valores and valores.modo_deslocacao == "a pe" %}selected{% endif %}>A pe</option>
+                                        <option value="carro" {% if valores and valores.modo_deslocacao == "carro" %}selected{% endif %}>Carro</option>
+                                    </select>
+                                    <span class="select-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M7 10L12 15L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <aside class="how-it-works" id="como-funciona" aria-label="Como funciona">
+                                <div class="how-it-works-title">
+                                    <span class="how-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 10H13V17H11V10ZM11 7H13V9H11V7Z"/>
+                                        </svg>
+                                    </span>
+                                    <h3>Como funciona?</h3>
+                                </div>
+                                <p>Introduza uma morada, escolha a categoria que procura e o modo de deslocacao. Mostraremos os locais mais proximos, a distancia e o tempo estimado.</p>
+                            </aside>
+                        </div>
+
+                        <button class="search-button" type="submit">
+                            <span class="button-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M10 3C6.13 3 3 6.13 3 10C3 13.87 6.13 17 10 17C11.57 17 13.03 16.5 14.22 15.65L18.29 19.71L19.71 18.29L15.65 14.22C16.5 13.03 17 11.57 17 10C17 6.13 13.87 3 10 3ZM10 5C12.76 5 15 7.24 15 10C15 12.76 12.76 15 10 15C7.24 15 5 12.76 5 10C5 7.24 7.24 5 10 5Z"/>
+                                </svg>
+                            </span>
+                            Pesquisar
+                        </button>
+                    </form>
+                </section>
+
+                <section class="feature-strip" aria-label="Destaques">
+                    <article class="feature-item">
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3C8.13 3 5 6.13 5 10C5 15.25 12 21 12 21C12 21 19 15.25 19 10C19 6.13 15.87 3 12 3ZM12 13.1C10.29 13.1 8.9 11.71 8.9 10C8.9 8.29 10.29 6.9 12 6.9C13.71 6.9 15.1 8.29 15.1 10C15.1 11.71 13.71 13.1 12 13.1Z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <h3>Resultados Precisos</h3>
+                            <p>Obtenha os locais mais proximos com distancia e tempo estimado.</p>
+                        </div>
+                    </article>
+
+                    <article class="feature-item">
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 1.75A10.25 10.25 0 1 0 22.25 12A10.26 10.26 0 0 0 12 1.75ZM13 12.41L16.3 15.71L14.89 17.12L11 13.24V6H13Z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <h3>Rapido e Simples</h3>
+                            <p>Pesquise rapido e intuitiva para facilitar o seu dia a dia.</p>
+                        </div>
+                    </article>
+
+                    <article class="feature-item">
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V5C21 3.9 20.1 3 19 3ZM12 3C12.55 3 13 3.45 13 4S12.55 5 12 5S11 4.55 11 4S11.45 3 12 3ZM19 21H5V5H7V8H17V5H19V21ZM8 11H16V13H8ZM8 15H16V17H8Z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <h3>Historico de Pesquisas</h3>
+                            <p>Consulte as suas pesquisas anteriores quando quiser.</p>
+                        </div>
+                    </article>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="brand-icon brand-icon-small">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 15.13 12 22 12 22C12 22 19.5 15.13 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.5C10.34 12.5 9 11.16 9 9.5C9 7.84 10.34 6.5 12 6.5C13.66 6.5 15 7.84 15 9.5C15 11.16 13.66 12.5 12 12.5Z"/>
+                    </svg>
+                </span>
+                <div>
+                    <strong>Around<span>Me</span></strong>
+                    <p>Encontre o que precisa, perto de si.</p>
+                </div>
+            </div>
+
+            <p class="footer-copy">© 2026 AroundMe. Todos os direitos reservados.</p>
+
+            <div class="footer-status">
+                <span class="footer-status-dot"></span>
+                <span>Dados atualizados</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
