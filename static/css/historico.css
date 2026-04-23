@@ -1,4 +1,9 @@
 .history-main {
+    background: var(--bg-main);
+    background-image: url("../img/background.png");
+    background-size: 100% auto;
+    background-position: center top;
+    background-repeat: no-repeat;
     padding: 42px 0 34px;
 }
 
@@ -72,12 +77,6 @@
     margin: 0;
     font-size: 1.3rem;
     color: var(--navy-900);
-}
-
-.history-panel-text {
-    margin: 8px 0 0;
-    color: var(--text-soft);
-    line-height: 1.7;
 }
 
 .history-mini-icon {

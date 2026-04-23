@@ -193,14 +193,7 @@ def formatar_locais(features: List[Dict]) -> List[Dict]:
     return locais
 
 
-def obter_rota(
-    origem_lat: float,
-    origem_lon: float,
-    destino_lat: float,
-    destino_lon: float,
-    modo: str,
-    api_key: str,
-) -> Dict:
+def obter_rota(origem_lat: float, origem_lon: float, destino_lat: float, destino_lon: float, modo: str, api_key: str,) -> Dict:
     modo = validar_modo(modo)
     modo_api = MODE_MAP[modo]
     cache_key = (
@@ -234,13 +227,7 @@ def obter_rota(
     return resposta
 
 
-def enriquecer_com_rotas(
-    locais: List[Dict],
-    origem_lat: float,
-    origem_lon: float,
-    modo: str,
-    api_key: str,
-) -> List[Dict]:
+def enriquecer_com_rotas(locais: List[Dict], origem_lat: float, origem_lon: float, modo: str, api_key: str,) -> List[Dict]:
     resultados = []
     for local in locais[:3]:
         local = local.copy()

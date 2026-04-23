@@ -21,8 +21,7 @@
 
             <nav class="main-nav" aria-label="Principal">
                 <a class="nav-link" href="{{ url_for('main.index') }}">Inicio</a>
-                <a class="nav-link nav-link-active" href="{{ url_for('main.historico') }}">Historico</a>
-                <a class="nav-link" href="{{ url_for('main.index') }}">Nova pesquisa</a>
+                <a class="nav-link nav-link-active" href="{{ url_for('main.historico') }}">Historico de Pesquisas</a>
             </nav>
         </div>
     </header>
@@ -65,7 +64,7 @@
                     <div class="results-panel">
                         <div class="results-panel-header">
                             <h2>Lista de resultados</h2>
-                            <span>{{ locais|length }} local{% if locais|length != 1 %}ais{% endif %}</span>
+                            <span>{{ locais|length }} {% if locais|length == 1 %}local{% else %}locais{% endif %}</span>
                         </div>
 
                         {% if locais %}
@@ -105,7 +104,6 @@
                     <div class="results-panel map-panel">
                         <div class="results-panel-header">
                             <h2>Mapa</h2>
-                            <span>Morada + resultados</span>
                         </div>
 
                         <div class="folium-map-shell">

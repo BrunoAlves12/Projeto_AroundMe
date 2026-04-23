@@ -21,8 +21,7 @@
 
             <nav class="main-nav" aria-label="Principal">
                 <a class="nav-link" href="{{ url_for('main.index') }}">Inicio</a>
-                <a class="nav-link nav-link-active" href="{{ url_for('main.historico') }}">Historico</a>
-                <a class="nav-link" href="{{ url_for('main.index') }}">Nova pesquisa</a>
+                <a class="nav-link nav-link-active" href="{{ url_for('main.historico') }}">Historico de Pesquisas</a>
             </nav>
         </div>
     </header>
@@ -65,13 +64,6 @@
                         </span>
                         <div>
                             <h2>Pesquisas recentes</h2>
-                            <p class="history-panel-text">
-                                {% if pesquisas %}
-                                    Consulte as pesquisas guardadas e volte a abrir os resultados atualizados.
-                                {% else %}
-                                    Ainda nao existem pesquisas guardadas.
-                                {% endif %}
-                            </p>
                         </div>
                     </div>
 
@@ -161,7 +153,7 @@
                                                         <path d="M19 4H18V2H16V4H8V2H6V4H5C3.89 4 3 4.89 3 6V20C3 21.11 3.89 22 5 22H19C20.11 22 21 21.11 21 20V6C21 4.89 20.11 4 19 4ZM19 20H5V9H19V20Z"/>
                                                     </svg>
                                                 </span>
-                                                <span>{{ pesquisa.data_pesquisa.strftime("%d/%m/%Y %H:%M") }}</span>
+                                                <span>{{ pesquisa.data_pesquisa_local.strftime("%d/%m/%Y %H:%M") }}</span>
                                             </div>
                                         </td>
                                         <td>

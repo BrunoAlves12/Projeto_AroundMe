@@ -18,8 +18,7 @@ def criar_mapa_resultados(referencia: str, latitude: float, longitude: float, lo
         [latitude, longitude],
         popup=f"<strong>Morada pesquisada</strong><br>{referencia}",
         tooltip="Morada pesquisada",
-        icon=folium.Icon(color="blue", icon="home"),
-    ).add_to(mapa)
+        icon=folium.Icon(color="blue", icon="home"),).add_to(mapa)
 
     pontos = [[latitude, longitude]]
 
@@ -34,8 +33,7 @@ def criar_mapa_resultados(referencia: str, latitude: float, longitude: float, lo
             [local_lat, local_lon],
             popup=f"<strong>{local['nome']}</strong><br>{local['morada']}",
             tooltip=local["nome"],
-            icon=folium.Icon(color="green", icon="info-sign"),
-        ).add_to(mapa)
+            icon=folium.Icon(color="green", icon="info-sign"),).add_to(mapa)
 
     if len(pontos) > 1:
         mapa.fit_bounds(pontos, padding=(35, 35))
@@ -61,13 +59,7 @@ def renderizar_pagina_resultados(pesquisa: Pesquisa, dados: dict):
 def renderizar_historico(mensagem: str | None = None, tipo_mensagem: str = "info", status_code: int = 200):
     pesquisas = Pesquisa.query.order_by(Pesquisa.data_pesquisa.desc()).all()
     return (
-        render_template(
-            "historico.html",
-            pesquisas=pesquisas,
-            mensagem_historico=mensagem,
-            tipo_mensagem=tipo_mensagem,
-        ),
-        status_code,
+        render_template("historico.html", pesquisas=pesquisas, mensagem_historico=mensagem, tipo_mensagem=tipo_mensagem,),status_code,
     )
 
 
@@ -82,10 +74,7 @@ def historico():
         return renderizar_historico()
     except SQLAlchemyError:
         db.session.rollback()
-        return render_template(
-            "erro.html",
-            mensagem="Nao foi possivel carregar o historico de pesquisas.",
-        ), 500
+        return render_template("erro.html",mensagem="Nao foi possivel carregar o historico de pesquisas.",), 500
 
 
 @main_bp.route("/historico/<int:pesquisa_id>/resultados")
@@ -93,11 +82,7 @@ def ver_resultados_historico(pesquisa_id: int):
     try:
         pesquisa = db.session.get(Pesquisa, pesquisa_id)
         if pesquisa is None:
-            return renderizar_historico(
-                mensagem="A pesquisa selecionada ja nao existe no historico.",
-                tipo_mensagem="erro",
-                status_code=404,
-            )
+            return renderizar_historico(mensagem="A pesquisa selecionada ja nao existe no historico.", tipo_mensagem="erro",status_code=404,)
 
         dados = pesquisar_servicos(
             pesquisa.morada,
@@ -105,25 +90,18 @@ def ver_resultados_historico(pesquisa_id: int):
             pesquisa.modo_deslocacao,
         )
         return renderizar_pagina_resultados(pesquisa, dados)
+    
     except AroundMeErro as erro:
         db.session.rollback()
-        return renderizar_historico(
-            mensagem=f"Nao foi possivel repetir a pesquisa: {erro}",
-            tipo_mensagem="erro",
-            status_code=400,
-        )
+        return renderizar_historico(mensagem=f"Nao foi possivel repetir a pesquisa: {erro}", tipo_mensagem="erro", status_code=400,
+                                    )
     except SQLAlchemyError:
         db.session.rollback()
-        return render_template(
-            "erro.html",
-            mensagem="Nao foi possivel aceder ao historico de pesquisas.",
-        ), 500
+        return render_template("erro.html", mensagem="Nao foi possivel aceder ao historico de pesquisas.",), 500
+    
     except Exception:
         db.session.rollback()
-        return renderizar_historico(
-            mensagem="Ocorreu um erro inesperado ao repetir a pesquisa.",
-            tipo_mensagem="erro",
-            status_code=500,
+        return renderizar_historico(mensagem="Ocorreu um erro inesperado ao repetir a pesquisa.", tipo_mensagem="erro", status_code=500,
         )
 
 
@@ -151,18 +129,15 @@ def resultados():
         db.session.add(pesquisa)
         db.session.commit()
         return renderizar_pagina_resultados(pesquisa, dados)
+    
     except AroundMeErro as erro:
         db.session.rollback()
         return render_template("index.html", erro=str(erro), valores=valores), 400
+    
     except SQLAlchemyError:
         db.session.rollback()
-        return render_template(
-            "erro.html",
-            mensagem="Nao foi possivel guardar a pesquisa no historico.",
-        ), 500
+        return render_template("erro.html", mensagem="Nao foi possivel guardar a pesquisa no historico.",), 500
+    
     except Exception:
         db.session.rollback()
-        return render_template(
-            "erro.html",
-            mensagem="Ocorreu um erro inesperado ao processar a pesquisa.",
-        ), 500
+        return render_template("erro.html", mensagem="Ocorreu um erro inesperado ao processar a pesquisa.",), 500
