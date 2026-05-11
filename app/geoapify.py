@@ -17,7 +17,7 @@ CATEGORY_MAP = {
     "hospital": "healthcare.hospital",
     "escola": "education.school",
     "supermercado": "commercial.supermarket",
-    "supermecado": "commercial.supermarket",
+    
 }
 
 MODE_MAP = {
